@@ -31,14 +31,6 @@ const TooltipWrapper = styled.div`
   }
 `;
 
-/**
- * Due to Popper.JS needing a reference to a component we provide a simple wrapper
- * to ensure the correct reference is provided.
- */
-const TriggerWrapper = styled.div`
-  display: inline-block;
-`;
-
 class TooltipContainer extends ControlledComponent {
   static propTypes = {
     /** Appends the tooltip to the body element */
@@ -89,6 +81,7 @@ class TooltipContainer extends ControlledComponent {
      * @param {Object} renderProps
      * @param {Function} renderProps.getTriggerProps - Props to be spread onto the trigger element
      * @param {Function} renderProps.isVisible - Whether the Tooltip is currently visible
+     * @param {Function} renderProps.ref - Callback to retrieve the trigger elements ref
      */
     trigger: PropTypes.func
   };
@@ -196,13 +189,12 @@ class TooltipContainer extends ControlledComponent {
           <Target>
             {({ targetProps }) => {
               return (
-                <TriggerWrapper innerRef={targetProps.ref}>
-                  {trigger &&
-                    trigger({
-                      getTriggerProps: props => this.getTriggerProps({ ...props }),
-                      isVisible
-                    })}
-                </TriggerWrapper>
+                trigger &&
+                trigger({
+                  getTriggerProps: props => this.getTriggerProps({ ...props }),
+                  ref: targetProps.ref,
+                  isVisible
+                })
               );
             }}
           </Target>
